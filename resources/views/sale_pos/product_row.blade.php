@@ -106,9 +106,9 @@
 		@endphp
 
 		@if(empty($is_direct_sell))
-		<div class="modal fade row_edit_product_price_model" id="row_edit_product_price_modal_{{$row_count}}" tabindex="-1" role="dialog">
+		{{-- <div class="modal fade row_edit_product_price_model" id="row_edit_product_price_modal_{{$row_count}}" tabindex="-1" role="dialog">
 			@include('sale_pos.partials.row_edit_product_price_modal')
-		</div> 
+		</div> --}}
 		@endif
 <br>
 		<small class="text-muted p-1">
@@ -398,12 +398,35 @@
 		<input type="text" name="products[{{$row_count}}][unit_price_inc_tax]" class="form-control pos_unit_price_inc_tax input_number" value="{{@num_format($unit_price_inc_tax)}}" @if(!$edit_price) readonly @endif @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$unit_price_inc_tax}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($unit_price_inc_tax)])}}" @endif>
 	</td>
 	<td class="">
-		{{-- <input type="text" name="products[{{$row_count}}][discount]" class="form-control discount input_number" value="0" > --}}
+		<div class="@if(!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
+			@php
+				$pos_unit_price = !empty($product->unit_price_before_discount) ? $product->unit_price_before_discount : $product->default_sell_price;
+			@endphp
+			{{-- <label>@lang('sale.unit_price')</label> --}}
+				<input type="hidden" name="products[{{$row_count}}][unit_price]" class="form-control pos_unit_price input_number mousetrap" value="{{@num_format($pos_unit_price)}}" @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$pos_unit_price}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($pos_unit_price)])}}" @endif>
+		</div>
+		@if(!auth()->user()->can('edit_product_price_from_sale_screen'))
+			<div class="form-group col-xs-12">
+				<strong>@lang('sale.unit_price'):</strong> {{@num_format(!empty($product->unit_price_before_discount) ? $product->unit_price_before_discount : $product->default_sell_price)}}
+			</div>
+		@endif
 		<div class="form-group col-xs-12 col-sm-12 @if(!$edit_discount) hide @endif">
+			{{-- <label>@lang('sale.discount_type')</label> --}}
 				{!! Form::select("products[$row_count][line_discount_type]", ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')], $discount_type , ['class' => 'form-control row_discount_type']); !!}
 		</div>
 		<div class="form-group col-xs-12 col-sm-12 @if(!$edit_discount) hide @endif">
+			{{-- <label>@lang('sale.discount_amount')</label> --}}
 				{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount']); !!}
+		</div>
+		@if(!empty($discount))
+			<div class="form-group col-xs-12">
+				<p class="help-block">{!! __('lang_v1.applied_discount_text', ['discount_name' => $discount->name, 'starts_at' => $discount->formated_starts_at, 'ends_at' => $discount->formated_ends_at]) !!}</p>
+			</div>
+		@endif
+		<div class="form-group col-xs-12 {{$hide_tax}}">
+			{{-- <label>@lang('sale.tax')</label> --}}
+			{!! Form::hidden("products[$row_count][item_tax]", @num_format($item_tax), ['class' => 'item_tax']); !!}
+			{!! Form::select("products[$row_count][tax_id]", $tax_dropdown['tax_rates'], $tax_id, ['placeholder' => 'Select', 'class' => 'form-control tax_id'], $tax_dropdown['attributes']); !!}
 		</div>
 	</td>
 	@if(!empty($common_settings['enable_product_warranty']) && !empty($is_direct_sell))

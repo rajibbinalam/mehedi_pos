@@ -853,12 +853,38 @@ $(document).ready(function() {
     });
 
     $(document).on('change', '.payment-amount', function() {
+        console.log('change payment amount');
         calculate_balance_due();
     });
 
     //Update discount
     $('button#posEditDiscountModalUpdate').click(function() {
 
+        //if discount amount is not valid return false
+        if (!$("#discount_amount_modal").valid()) {
+            return false;
+        }
+        //Close modal
+        $('div#posEditDiscountModal').modal('hide');
+
+        //Update values
+        $('input#discount_type').val($('select#discount_type_modal').val());
+        __write_number($('input#discount_amount'), __read_number($('input#discount_amount_modal')));
+
+        if ($('#reward_point_enabled').length) {
+            var reward_validation = isValidatRewardPoint();
+            if (!reward_validation['is_valid']) {
+                toastr.error(reward_validation['msg']);
+                $('#rp_redeemed_modal').val(0);
+                $('#rp_redeemed_modal').change();
+            }
+            updateRedeemedAmount();
+        }
+
+        pos_total_row();
+    });
+    
+    $('#discount_amount_modal, #discount_type_modal').on('change', function() {
         //if discount amount is not valid return false
         if (!$("#discount_amount_modal").valid()) {
             return false;
@@ -1279,7 +1305,7 @@ $(document).ready(function() {
             $('#search_product').focus();
         }
         if (key == 9) {
-            $('input.payment-amount-side').focus();
+            // $('input.payment-amount-side').focus();
         }
     });
     $('input.pos_quantity').keydown(function(e) {
@@ -1287,7 +1313,7 @@ $(document).ready(function() {
         if (key == 9) {
             // the tab key code
             e.preventDefault();
-            $('input.payment-amount-side').focus();
+            // $('input.payment-amount-side').focus();
         }
     });
 
@@ -1897,12 +1923,12 @@ function calculate_billing_details(price_total) {
     $('span#total_payable').text(__currency_trans_from_en(shown_total, false));
 
     $('span.total_payable_span').text(__currency_trans_from_en(total_payable_rounded, true));
-    $('.payment-amount-side').val(total_payable_rounded)
+    // $('.payment-amount-side').val(total_payable_rounded)
 
     //Check if edit form then don't update price.
     if ($('form#edit_pos_sell_form').length == 0 && $('form#edit_sell_form').length == 0) {
         __write_number($('.payment-amount').first(), total_payable_rounded);
-        __write_number($('.payment-amount-side').first(), total_payable_rounded);
+        // __write_number($('.payment-amount-side').first(), total_payable_rounded);
     }
 
     $(document).trigger('invoice_total_calculated');
@@ -1961,7 +1987,6 @@ function calculate_balance_due() {
         __write_number($('input#change_return'), 0);
         $('span.change_return_span').text(__currency_trans_from_en(0, true));
         change_return = 0;
-        
     }
 
     if (change_return !== 0) {
@@ -2083,7 +2108,7 @@ function reset_pos_form(){
     //reset contact due
     $('.contact_due_text').find('span').text('');
     $('.contact_due_text').addClass('hide');
-    $('.payment-amount-side').val(0)
+    // $('.payment-amount-side').val(0)
     $(document).trigger('sell_form_reset');
 }
 

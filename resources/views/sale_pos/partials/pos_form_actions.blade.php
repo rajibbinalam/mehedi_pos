@@ -19,12 +19,12 @@
             </div>
 
             <div class="!tw-w-full md:!tw-w-none !tw-flex md:!tw-hidden !tw-flex-row !tw-items-center !tw-gap-3">
-                @if (!Gate::check('disable_pay_checkout') || auth()->user()->can('superadmin') || auth()->user()->can('admin'))
+                {{-- @if (!Gate::check('disable_pay_checkout') || auth()->user()->can('superadmin') || auth()->user()->can('admin'))
                     <button type="button"
                         class=" tw-flex tw-flex-row tw-items-center tw-justify-center tw-gap-1 tw-font-bold tw-text-white tw-cursor-pointer tw-text-xs md:tw-text-sm tw-bg-[#001F3E] tw-rounded-md tw-p-2 tw-w-[8.5rem] @if (!$is_mobile)  @endif no-print @if ($pos_settings['disable_pay_checkout'] != 0) hide @endif"
                         id="pos-finalize" title="@lang('lang_v1.tooltip_checkout_multi_pay')"><i class="fas fa-money-check-alt"
                             aria-hidden="true"></i> @lang('lang_v1.checkout_multi_pay') </button>
-                @endif
+                @endif --}}
 
                 @if (!Gate::check('disable_express_checkout') || auth()->user()->can('superadmin') || auth()->user()->can('admin'))
                     <button type="button"
@@ -145,7 +145,7 @@
         </div>
     </div>
 </div>
-@if (isset($transaction))
+{{-- @if (isset($transaction))
     @include('sale_pos.partials.edit_discount_modal', [
         'sales_discount' => $transaction->discount_amount,
         'discount_type' => $transaction->discount_type,
@@ -161,7 +161,7 @@
         'rp_redeemed_amount' => 0,
         'max_available' => 0,
     ])
-@endif
+@endif --}}
 
 @if (isset($transaction))
     @include('sale_pos.partials.edit_order_tax_modal', ['selected_tax' => $transaction->tax_id])

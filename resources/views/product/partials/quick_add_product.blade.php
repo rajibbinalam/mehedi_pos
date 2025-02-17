@@ -13,7 +13,7 @@
             {!! Form::label('name', __('product.product_name') . ':*') !!}
               {!! Form::text('name', $product_name, ['class' => 'form-control', 'required',
               'placeholder' => __('product.product_name')]); !!}
-              {!! Form::select('type', ['single' => 'Single', 'variable' => 'Variable'], 'single', ['class' => 'hide', 'id' => 'type']); !!}
+              {{-- {!! Form::select('type', ['single' => 'Single', 'variable' => 'Variable'], 'single', ['class' => 'hide', 'id' => 'type']); !!} --}}
           </div>
         </div>
 
@@ -219,11 +219,49 @@
           @endforeach
         @endif
       </div>
-      <div class="row">
+      {{-- <div class="row">
         <div class="form-group col-sm-11 col-sm-offset-1">
           @include('product.partials.single_product_form_part', ['profit_percent' => $default_profit_percent, 'quick_add' => true ])
         </div>
-      </div>
+      </div> --}}
+
+    @component('components.widget', ['class' => 'box-primary'])
+    <div class="row">
+
+        <div class="col-sm-4 @if(!session('business.enable_price_tax')) hide @endif">
+            <div class="form-group">
+                {!! Form::label('tax', __('product.applicable_tax') . ':') !!}
+                {!! Form::select('tax', $taxes, !empty($duplicate_product->tax) ? $duplicate_product->tax : null, ['placeholder' => __('messages.please_select'), 'class' => 'form-control select2'], $tax_attributes); !!}
+            </div>
+        </div>
+
+        <div class="col-sm-4 @if(!session('business.enable_price_tax')) hide @endif">
+            <div class="form-group">
+                {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':*') !!}
+                {!! Form::select('tax_type', ['inclusive' => __('product.inclusive'), 'exclusive' => __('product.exclusive')], !empty($duplicate_product->tax_type) ? $duplicate_product->tax_type : 'exclusive',
+                ['class' => 'form-control select2', 'required']); !!}
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                {!! Form::label('type', __('product.product_type') . ':*') !!} @show_tooltip(__('tooltip.product_type'))
+                {!! Form::select('type', $product_types, !empty($duplicate_product->type) ? $duplicate_product->type : null, ['class' => 'form-control select2',
+                'required', 'data-action' => !empty($duplicate_product) ? 'duplicate' : 'add', 'data-product_id' => !empty($duplicate_product) ? $duplicate_product->id : '0']); !!}
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12" id="product_form_part">
+            @include('product.partials.single_product_form_part', ['profit_percent' => $default_profit_percent])
+        </div>
+
+        <input type="hidden" id="variation_counter" value="1">
+        <input type="hidden" id="default_profit_percent" value="{{ $default_profit_percent }}">
+
+    </div>
+    @endcomponent
       @if(!empty($product_for) && $product_for == 'pos')
         @include('product.partials.quick_product_opening_stock', ['locations' => $locations])
       @endif
@@ -307,5 +345,34 @@
         return false;
       }
     });
+
+
+    function show_product_type_form() {
+      //Disable Stock management & Woocommmerce sync if type combo
+      if($('#type').val() == 'combo'){
+          $('#enable_stock').iCheck('uncheck');
+          $('input[name="woocommerce_disable_sync"]').iCheck('check');
+      }
+
+      var action = $('#type').attr('data-action');
+      var product_id = $('#type').attr('data-product_id');
+      $.ajax({
+          method: 'POST',
+          url: '/products/product_form_part',
+          dataType: 'html',
+          data: { type: $('#type').val(), product_id: product_id, action: action },
+          success: function(result) {
+              if (result) {
+                  $('#product_form_part').html(result);
+                  toggle_dsp_input();
+              }
+          },
+      });
+    }
+		$('#type').change(function() {
+			console.log('product_form');
+			show_product_type_form();
+		});
+
   });
 </script>

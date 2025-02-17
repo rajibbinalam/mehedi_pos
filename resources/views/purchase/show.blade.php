@@ -2,6 +2,7 @@
   <div class="modal-content">
     @include('purchase.partials.show_details')
     <div class="modal-footer">
+      <a href="{{ action([\App\Http\Controllers\PurchaseController::class, 'edit'], [$purchase->id]) }}" class="tw-dw-btn tw-dw-btn-info tw-text-white no-print"><i class="fas fa-edit"></i>{{ __('messages.edit') }}</a>
       <button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white no-print" aria-label="Print" 
       onclick="$(this).closest('div.modal-content').printThis();"><i class="fa fa-print"></i> @lang( 'messages.print' )
       </button>

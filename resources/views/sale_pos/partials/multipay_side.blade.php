@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-5">
         <div class="row">
-            <div id="payment_rows_div-multipay_side">
+            <div id="payment_rows_div">
                 @php
                     $pos_settings = !empty(session()->get('business.pos_settings')) ? json_decode(session()->get('business.pos_settings'), true) : [];
                     $show_in_pos = '';
@@ -127,7 +127,7 @@
         </div>
     </div>
     <div class="col-md-7">
-        <div class="box box-solid bg-orange">
+        <div class="box box-solid">
             <div class="box-body">
                 {{-- <div class="col-md-12">
                     <strong>

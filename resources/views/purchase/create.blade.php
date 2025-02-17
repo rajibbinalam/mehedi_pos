@@ -2,7 +2,13 @@
 @section('title', __('purchase.add_purchase'))
 
 @section('content')
-
+<style>
+	@media (min-width: 992px) {
+		.modal-lg {
+			width: 86%;
+		}
+	}
+</style>
 @php
 	$custom_labels = json_decode(session('business.custom_labels'), true);
 @endphp

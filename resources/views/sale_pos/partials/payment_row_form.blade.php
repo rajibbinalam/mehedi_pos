@@ -8,6 +8,31 @@
 		$readonly = $payment_line['method'] == 'advance' ? true : false;
 	@endphp
 	@if ($discount)
+	<div class="col-md-12">
+		<div class="form-group">
+			{!! Form::label("total_payable_amount" ,__('sale.total_payable') . ':*') !!}
+			<div class="input-group">
+				<span class="input-group-addon">
+					<i class="fas fa-money-bill-alt"></i>
+				</span>
+				{!! Form::text("payable_amount", @num_format($payment_line['amount']), ['class' => 'form-control payable-amount input_number', 'required', 'id' => "total_payable_amount", 'placeholder' => __('sale.amount')]); !!}
+			</div>
+		</div>
+	</div>
+	@endif
+	
+	<div class="{{$col_class}}">
+		<div class="form-group">
+			{!! Form::label("amount_$row_index" ,__('sale.amount') . ':*') !!}
+			<div class="input-group">
+				<span class="input-group-addon">
+					<i class="fas fa-money-bill-alt"></i>
+				</span>
+				{!! Form::text("payment[$row_index][amount]", @num_format($payment_line['amount']), ['class' => 'form-control payment-amount input_number', 'required', 'id' => "amount_$row_index", 'placeholder' => __('sale.amount'), 'readonly' => $readonly]); !!}
+			</div>
+		</div>
+	</div>
+	@if ($discount)
 	<div class="{{$col_class}}" style="padding: 0px;">
 		{{-- <div class="form-group">
 			{!! Form::label("discount" ,__('sale.discount') . ':*') !!}
@@ -26,11 +51,13 @@
 					<span class="input-group-addon">
 						<i class="fa fa-info"></i>
 					</span>
-					{!! Form::select('discount_type_modal', ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')], $discount_type , ['class' => 'form-control','placeholder' => __('messages.please_select'), 'required']); !!}
+					{!! Form::select('discount_type_modal', ['fixed' => __('lang_v1.fixed'), 'percentage' => __('lang_v1.percentage')], $discount_type ?? 'fixed' , ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
 				</div>
 			</div>
 		</div>
 		@php
+			$sales_discount = $transaction->discount_amount;
+			$discount_type = $transaction->discount_type;
 			$max_discount = !is_null(auth()->user()->max_sales_discount_percent) ? auth()->user()->max_sales_discount_percent : '';
 			//if sale discount is more than user max discount change it to max discount
 			if($discount_type == 'percentage' && $max_discount != '' && $sales_discount > $max_discount) $sales_discount = $max_discount;
@@ -48,17 +75,7 @@
 		</div>
 	</div>
 	@endif
-	<div class="{{$col_class}}">
-		<div class="form-group">
-			{!! Form::label("amount_$row_index" ,__('sale.amount') . ':*') !!}
-			<div class="input-group">
-				<span class="input-group-addon">
-					<i class="fas fa-money-bill-alt"></i>
-				</span>
-				{!! Form::text("payment[$row_index][amount]", @num_format($payment_line['amount']), ['class' => 'form-control payment-amount input_number', 'required', 'id' => "amount_$row_index", 'placeholder' => __('sale.amount'), 'readonly' => $readonly]); !!}
-			</div>
-		</div>
-	</div>
+
 	@if(!empty($show_date))
 	<div class="{{$col_class}}">
 		<div class="form-group">

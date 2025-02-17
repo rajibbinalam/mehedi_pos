@@ -13,7 +13,7 @@
 	@endif
 @endforeach
 
-<tr class="product_row" data-row_index="{{$row_count}}" @if(!empty($so_line)) data-so_id="{{$so_line->transaction_id}}" @endif>
+<tr class="product_row" data-row_index="{{$row_count}}" @if(!empty($so_line)) data-so_id="{{$so_line->transaction_id}}" @endif style="@if(empty($action)) border: 2px solid #40be433b;background: #eaf9eb3b; @endif">
 	<td>
 		@if(!empty($so_line))
 			<input type="hidden" 

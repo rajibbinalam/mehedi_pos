@@ -617,6 +617,29 @@ $(document).ready(function() {
         }
     });
 
+
+
+//resources->views->sale_pos->partials->pos_form_actions.blade.php
+
+            // @if(!$is_mobile)
+            //     <div class="bg-navy pos-total text-white">
+            // {{--    <span class="text">@lang('sale.total_payable')</span>--}}
+//                     <span class="text">Total</span>
+//                     <input type="hidden" name="final_total"
+//                            id="final_total_input" value=0>
+//                     <span id="total_payable" class="number">0</span>
+//                 </div>
+//             @endif
+
+//             @if(!$is_mobile)
+//                 <div class="bg-primary pos-total text-white">
+//                     <span class="text">@lang('sale.total_payable')</span>
+//                     <input class="text-black" type="text" name="total_payable_amount" id="total_payable_amount" value=0 style="height: 30px;">
+//                     <button type="button" class="btn btn-success btn-flat btn-sm" id="posEditPayableAmountUpdate">@lang('messages.update')</button>
+//                 </div>
+//             @endif
+
+
     //Finalize without showing payment options
     $('button.pos-express-finalize').click(function() {
 
@@ -1860,6 +1883,7 @@ function get_subtotal() {
 }
 
 function calculate_billing_details(price_total) {
+    console.log('calculate_billing_details');
     var discount = pos_discount(price_total);
     if ($('#reward_point_enabled').length) {
         total_customer_reward = $('#rp_redeemed_amount').val();
@@ -1937,11 +1961,12 @@ function calculate_billing_details(price_total) {
 }
 
 function pos_discount(total_amount) {
+    console.log('pos_discount');
     var calculation_type = $('#discount_type').val();
     var calculation_amount = __read_number($('#discount_amount'));
-
+    console.log({calculation_type, calculation_amount, total_amount});
     var discount = __calculate_amount(calculation_type, calculation_amount, total_amount);
-
+    console.log({discount});
     $('span#total_discount').text(__currency_trans_from_en(discount, false));
 
     return discount;
@@ -1965,6 +1990,7 @@ function pos_order_tax(price_total, discount) {
 }
 
 function calculate_balance_due() {
+    console.log('calculate_balance_due');
     var total_payable = __read_number($('#final_total_input'));
     var total_paying = 0;
     $('#payment_rows_div')
@@ -2661,7 +2687,7 @@ function validate_discount_field() {
     console.log('validate_discount_field');
     discount_element = $('#discount_amount_modal');
     discount_type_element = $('#discount_type_modal');
-
+    console.log({discount_element, discount_type_element});
     if ($('#add_sell_form').length || $('#edit_sell_form').length) {
         discount_element = $('#discount_amount');
         discount_type_element = $('#discount_type');
@@ -3220,7 +3246,7 @@ $(document).on('change', '#res_waiter_id', function(e){
 
 //Update payable amount
 $('button#posEditPayableAmountUpdate').click(function () {
-    console.log('ok');
+    console.log('posEditPayableAmountUpdate');
     //if payable amount is not valid return false
     if (!$("#total_payable_amount").valid()) {
         return false;
@@ -3235,4 +3261,39 @@ $('button#posEditPayableAmountUpdate').click(function () {
     __write_number($('input#discount_amount'), payable_price_total - total_payable_amount);
 
     pos_total_row();
+});
+//Update payable amount
+$('#total_payable_amount').on('change', function () {
+    //if payable amount is not valid return false
+    if (!$("#total_payable_amount").valid()) {
+        return false;
+    }
+    let total_payable_amount = $('#total_payable_amount').val()
+    //Update values
+    let payable_price_total = get_subtotal();
+    if (total_payable_amount > payable_price_total) {
+        return false;
+    }
+    $('input#discount_type').val('fixed');
+    $('select#discount_type_modal').val('fixed');
+    __write_number($('input#discount_amount'), payable_price_total - total_payable_amount);
+    __write_number($('input#discount_amount_modal'), payable_price_total - total_payable_amount);
+
+    pos_total_row();
+});
+
+// on search_product focuse, down key press will focuse on total_payable_amount input
+$(document).keydown(function (e) {
+    if (e.keyCode == 40 && $('#search_product').is(':focus')) {
+        $('#total_payable_amount').focus().select();
+        return false;
+    }
+    if (e.keyCode == 40 && $('#total_payable_amount').is(':focus')) {
+        $('.payment-amount').focus().select();
+        return false;
+    }
+    if (e.keyCode == 40 && $('.payment-amount').is(':focus')) {
+        $('#discount_amount_modal').focus().select();
+        return false;
+    }
 });

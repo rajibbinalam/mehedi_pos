@@ -434,6 +434,10 @@ class ReportController extends Controller
 
                     return $html;
                 })
+                ->addColumn('default_purchase_price', function ($row) {
+                    $html = '<span>'.$this->transactionUtil->num_f($row->default_purchase_price, true).'</span>';
+                    return $html;
+                })
                 ->editColumn('stock_price', function ($row) {
                     $html = '<span class="total_stock_price" data-orig-value="'
                         .$row->stock_price.'">'.
@@ -466,9 +470,9 @@ class ReportController extends Controller
                 ->removeColumn('unit')
                 ->removeColumn('id');
 
-            $raw_columns = ['unit_price', 'total_transfered', 'total_sold',
+            $raw_columns = ['default_purchase_price', 'unit_price', 'total_transfered', 'total_sold',
                 'total_adjusted', 'stock', 'stock_price', 'stock_value_by_sale_price',
-                'potential_profit', 'action', ];
+                'potential_profit', 'action' ];
 
             if ($show_manufacturing_data) {
                 $datatable->editColumn('total_mfg_stock', function ($row) {

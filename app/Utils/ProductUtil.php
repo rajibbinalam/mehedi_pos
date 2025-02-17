@@ -1848,6 +1848,7 @@ class ProductUtil extends Util
             'units.short_name as unit',
             'p.enable_stock as enable_stock',
             'variations.sell_price_inc_tax as unit_price',
+            'variations.default_purchase_price as default_purchase_price',
             'pv.name as product_variation',
             'variations.name as variation_name',
             'l.name as location_name',
@@ -2025,6 +2026,7 @@ class ProductUtil extends Util
                                     'transactions.invoice_no',
                                     'transactions.ref_no',
                                     'transactions.additional_notes',
+                                    'transactions.is_direct_sale',
                                     'c.name as contact_name',
                                     'c.supplier_business_name',
                                     'pl.secondary_unit_quantity as purchase_secondary_unit_quantity',
@@ -2057,6 +2059,7 @@ class ProductUtil extends Util
                     'type' => 'sell',
                     'type_label' => __('sale.sale'),
                     'ref_no' => $stock_line->invoice_no,
+                    'is_direct_sale' => $stock_line->is_direct_sale,
                     'sell_secondary_unit_quantity' => ! empty($stock_line->sell_secondary_unit_quantity) ? $this->roundQuantity($stock_line->sell_secondary_unit_quantity) : 0,
                     'stock_in_second_unit' => $this->roundQuantity($stock_in_second_unit),
                 ]);

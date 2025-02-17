@@ -48,7 +48,7 @@
                                     @include('sale_pos.partials.pos_form_totals')
 
                                     <!-- Multi payment Modal  -->
-                                    @include('sale_pos.partials.payment_modal')
+                                    {{-- @include('sale_pos.partials.payment_modal') --}}
 
                                     @if (empty($pos_settings['disable_suspend']))
                                         @include('sale_pos.partials.suspend_note_modal')
@@ -61,18 +61,18 @@
                             {{-- </div> --}}
                         </div>
                     </div>
-                    @if (empty($pos_settings['hide_product_suggestion']) && !isMobile())
+                    {{-- @if (empty($pos_settings['hide_product_suggestion']) && !isMobile())
                         <!-- Product Suggetion list  --->
                         <div class="md:tw-no-padding tw-w-full lg:tw-w-[40%] tw-px-5">
                             @include('sale_pos.partials.pos_sidebar')
                         </div>
-                    @endif
-                    @if ($pos_settings['disable_pay_checkout'] == 0 && $pos_settings['hide_product_suggestion'] == 1)
+                    @endif --}}
+                    {{-- @if ($pos_settings['disable_pay_checkout'] == 0 && $pos_settings['hide_product_suggestion'] == 1) --}}
                     <!--   Multiple Pay Sidebar   -->
                         <div class="md:tw-no-padding tw-w-full lg:tw-w-[40%] tw-px-5">
                             @include('sale_pos.partials.multipay_side')
                         </div>
-                    @endif
+                    {{-- @endif --}}
                 </div>
             </div>
         </div>

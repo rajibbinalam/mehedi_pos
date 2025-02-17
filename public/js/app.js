@@ -861,9 +861,11 @@ $(document).ready(function() {
         get_sub_units();
     });
     if ($('.product_form').length && !$('.product_form').hasClass('create')) {
+        console.log('product_form');
         show_product_type_form();
     }
     $('#type').change(function() {
+        console.log('product_form');
         show_product_type_form();
     });
 

@@ -1438,9 +1438,10 @@ class ProductController extends Controller
 
         $common_settings = session()->get('business.common_settings');
         $warranties = Warranty::forDropdown($business_id);
+        $product_types = $this->product_types();
 
         return view('product.partials.quick_add_product')
-                ->with(compact('categories', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'product_name', 'locations', 'product_for', 'enable_expiry', 'enable_lot', 'module_form_parts', 'business_locations', 'common_settings', 'warranties'));
+                ->with(compact('categories', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'product_name', 'locations', 'product_for', 'enable_expiry', 'enable_lot', 'module_form_parts', 'business_locations', 'common_settings', 'warranties', 'product_types'));
     }
 
     /**
@@ -1451,6 +1452,7 @@ class ProductController extends Controller
      */
     public function saveQuickProduct(Request $request)
     {
+        return $request->all();
         if (! auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }

@@ -56,8 +56,8 @@
 			</div>
 		</div>
 		@php
-			$sales_discount = $transaction->discount_amount;
-			$discount_type = $transaction->discount_type;
+			$sales_discount = @$transaction->discount_amount;
+			$discount_type = @$transaction->discount_type;
 			$max_discount = !is_null(auth()->user()->max_sales_discount_percent) ? auth()->user()->max_sales_discount_percent : '';
 			//if sale discount is more than user max discount change it to max discount
 			if($discount_type == 'percentage' && $max_discount != '' && $sales_discount > $max_discount) $sales_discount = $max_discount;

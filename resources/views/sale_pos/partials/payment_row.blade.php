@@ -24,7 +24,7 @@
                 'payment_line' => $payment_line,
                 'show_denomination' => true,
 				'show_in_pos' => $show_in_pos,
-                'side_show' => $side_show,
+                'side_show' => $side_show ?? false,
                 'discount' => $discount,
             ])
         </div>

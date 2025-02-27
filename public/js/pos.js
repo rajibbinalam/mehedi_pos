@@ -908,6 +908,10 @@ $(document).ready(function() {
     });
     
     $('#discount_amount_modal, #discount_type_modal').on('change', function() {
+        console.log('#discount_amount_modal, #discount_type_modal');
+        console.log($("#discount_amount_modal").val());
+        console.log($("#discount_amount_modal").rules());
+        console.log('Changing discount amount');
         //if discount amount is not valid return false
         if (!$("#discount_amount_modal").valid()) {
             return false;
@@ -2694,12 +2698,15 @@ function validate_discount_field() {
     }
     var max_value = parseFloat(discount_element.data('max-discount'));
     if (discount_element.val() != '' && !isNaN(max_value)) {
-        if (discount_type_element.val() == 'fixed') {
+        console.log(discount_element.val());
+        console.log(discount_type_element.val());
+        console.log({max_value});
+        if (discount_type_element.val() == 'fixed' && get_subtotal() != 0) {
             var subtotal = get_subtotal();
             //get max discount amount
             max_value = __calculate_amount('percentage', max_value, subtotal)
         }
-
+        console.log({'Update': max_value});
         discount_element.rules('add', {
             'max-value': max_value,
             messages: {
